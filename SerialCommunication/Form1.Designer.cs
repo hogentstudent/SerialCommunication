@@ -1,4 +1,4 @@
-﻿namespace SerialCommunication
+namespace SerialCommunication
 {
     partial class Form1
     {
@@ -24,7 +24,7 @@
 
         /// <summary>
         /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
+        /// the contents of this method by the code editor.
         /// </summary>
         private void InitializeComponent()
         {
@@ -92,6 +92,7 @@
             this.serialPortArduino = new System.IO.Ports.SerialPort(this.components);
             this.timerOefening3 = new System.Windows.Forms.Timer(this.components);
             this.timerOefening4 = new System.Windows.Forms.Timer(this.components);
+            this.timerOefening5 = new System.Windows.Forms.Timer(this.components);
             this.tabControl.SuspendLayout();
             this.tabPageInstellingen.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -886,6 +887,11 @@
             this.timerOefening4.Interval = 1000;
             this.timerOefening4.Tick += new System.EventHandler(this.timerOefening4_Tick);
             // 
+            // timerOefening5
+            // 
+            this.timerOefening5.Interval = 1000;
+            this.timerOefening5.Tick += new System.EventHandler(this.timerOefening5_Tick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -1000,6 +1006,6 @@
         private System.IO.Ports.SerialPort serialPortArduino;
         private System.Windows.Forms.Timer timerOefening3;
         private System.Windows.Forms.Timer timerOefening4;
+        private System.Windows.Forms.Timer timerOefening5;
     }
 }
-
