@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -30,6 +30,9 @@ namespace SerialCommunication
                 if (comboBoxPoort.Items.Count > 0) comboBoxPoort.SelectedIndex = 0;
 
                 comboBoxBaudrate.SelectedIndex = comboBoxBaudrate.Items.IndexOf("115200");
+                
+                // Initieel status: niet verbonden
+                labelStatus.Text = "Status: Arduino niet verbonden";
             }
             catch (Exception)
             { }
@@ -60,10 +63,7 @@ namespace SerialCommunication
 
                 if (serialPortArduino.IsOpen)
                 {
-                    serialPortArduino.Close();
-                    radioButtonVerbonden.Checked = false;
-                    buttonConnect.Text = "Connect";
-                    labelStatus.Text = "status: Disconnected"; // verbinding en gebruiker wilt het verbreken
+                    DisconnectArduino();
                 }
                 else
                 {
@@ -100,24 +100,43 @@ namespace SerialCommunication
                     {
                         radioButtonVerbonden.Checked = true;
                         buttonConnect.Text = "disconnect";
-                        labelStatus.Text = "Status: Connected";
+                        labelStatus.Text = "Status: Arduino verbonden";
 
                     }
                     else
                     {
                         serialPortArduino.Close();
-                        labelStatus.Text = "Error: verkeerd antwoord";
+                        labelStatus.Text = "Status: Arduino niet verbonden - Verkeerd antwoord";
                     }
                 }
 
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "error" + exception.Message;
-                serialPortArduino.Close();
+                labelStatus.Text = "Status: Arduino niet verbonden - " + exception.Message;
+                if (serialPortArduino.IsOpen) serialPortArduino.Close();
                 radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
             }
 
+        }
+
+        private void DisconnectArduino()
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    serialPortArduino.Close();
+                }
+                radioButtonVerbonden.Checked = false;
+                buttonConnect.Text = "Connect";
+                labelStatus.Text = "Status: Arduino niet verbonden";
+            }
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Status: Fout bij verbreken - " + exception.Message;
+            }
         }
 
         private void checkBoxDigital2_CheckedChanged(object sender, EventArgs e)
@@ -135,16 +154,15 @@ namespace SerialCommunication
                     serialPortArduino.WriteLine(commando);
 
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error" + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
-
-
-
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
         }
 
@@ -164,16 +182,15 @@ namespace SerialCommunication
                     serialPortArduino.WriteLine(commando);
 
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error" + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
-
-
-
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
         }
 
@@ -192,16 +209,15 @@ namespace SerialCommunication
                     serialPortArduino.WriteLine(commando);
 
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error" + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
-
-
-
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
 
         }
@@ -216,14 +232,16 @@ namespace SerialCommunication
                     serialPortArduino.WriteLine(commando);
 
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
 
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error" + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
         }
 
@@ -238,14 +256,16 @@ namespace SerialCommunication
                     serialPortArduino.WriteLine(commando);
 
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
 
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error" + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
         }
 
@@ -260,14 +280,16 @@ namespace SerialCommunication
                     serialPortArduino.WriteLine(commando);
 
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
 
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error" + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
         }
 
@@ -275,6 +297,7 @@ namespace SerialCommunication
         {
             timerOefening3.Enabled = tabControl.SelectedIndex == 3;
             timerOefening4.Enabled = tabControl.SelectedIndex == 4;
+            timerOefening5.Enabled = tabControl.SelectedIndex == 5;
         }
 
         private void timerOefening3_Tick(object sender, EventArgs e)
@@ -307,14 +330,21 @@ namespace SerialCommunication
 
 
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
 
+            }
+            catch (TimeoutException)
+            {
+                labelStatus.Text = "Status: Arduino niet verbonden - Timeout";
+                DisconnectArduino();
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
         }
 
@@ -335,15 +365,88 @@ namespace SerialCommunication
                     
                     labelAnalog0.Text = value.ToString();
                 }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
+            }
+            catch (TimeoutException)
+            {
+                labelStatus.Text = "Status: Arduino niet verbonden - Timeout";
+                DisconnectArduino();
             }
             catch (Exception exception)
             {
-                labelStatus.Text = "Error: " + exception.Message;
-                serialPortArduino.Close();
-                radioButtonVerbonden.Checked = false;
-                buttonConnect.Text = "Connect";
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
             }
 
+        }
+
+        private void timerOefening5_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (serialPortArduino.IsOpen)
+                {
+                    serialPortArduino.ReadExisting();
+
+                    // Gewenste temperatuur (pin A0): 0..1023 -> 5..45°C
+                    string commando = "get a0";
+                    serialPortArduino.WriteLine(commando);
+                    string antwoord = serialPortArduino.ReadLine();
+                    antwoord = antwoord.TrimEnd();
+                    antwoord = antwoord.Substring(4);
+                    int valueA0 = Int32.Parse(antwoord);
+                    
+                    // Richtingscoëfficiënt: (45-5)/(1023-0) = 40/1023
+                    // Offset: 5
+                    double gewensteTemp = (valueA0 * 40.0 / 1023.0) + 5.0;
+
+                    // Huidige temperatuur (pin A1): 0..1023 -> 0..500°C
+                    commando = "get a1";
+                    serialPortArduino.WriteLine(commando);
+                    antwoord = serialPortArduino.ReadLine();
+                    antwoord = antwoord.TrimEnd();
+                    antwoord = antwoord.Substring(4);
+                    int valueA1 = Int32.Parse(antwoord);
+                    
+                    // Richtingscoëfficiënt: (500-0)/(1023-0) = 500/1023
+                    // Offset: 0
+                    double huidigeTemp = (valueA1 * 500.0 / 1023.0);
+
+                    // Visualiseer temperaturen (afgerond op 1 decimaal)
+                    labelGewensteTemp.Text = gewensteTemp.ToString("F1") + " °C";
+                    labelHuidigeTemp.Text = huidigeTemp.ToString("F1") + " °C";
+
+                    // LED-besturing: branden wanneer huidigeTemp < gewensteTemp
+                    if (huidigeTemp < gewensteTemp)
+                    {
+                        commando = "set d2 high";
+                    }
+                    else
+                    {
+                        commando = "set d2 low";
+                    }
+                    serialPortArduino.WriteLine(commando);
+
+                    labelStatus.Text = "Status: Arduino verbonden";
+                }
+                else
+                {
+                    labelStatus.Text = "Status: Arduino niet verbonden";
+                }
+            }
+            catch (TimeoutException)
+            {
+                labelStatus.Text = "Status: Arduino niet verbonden - Timeout";
+                DisconnectArduino();
+            }
+            catch (Exception exception)
+            {
+                labelStatus.Text = "Status: Arduino niet verbonden - Error: " + exception.Message;
+                DisconnectArduino();
+            }
         }
     }
 
